@@ -47,5 +47,5 @@ def dados():
     return render_template('dados.html',plot1=g1.to_html())
 
 if __name__ == '__main__':
-    app.run(debug=True) 
+    app.run() 
     
