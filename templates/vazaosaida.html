@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %} Vazão Saida {% endblock %}
+
+{% block content %}
+    
+<style>
+    #titulo-vazao {
+        display: block;
+        text-align: center;
+        font-size: 24px; /* Ajuste o tamanho da fonte conforme necessário */
+        margin-bottom: 20px; /* Espaço abaixo do título */
+    }
+
+    #dateForm {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    #submitBtn {
+        margin-top: 10px;
+    }
+
+    #plot-container {
+        margin-top: 20px;
+        text-align: center;
+    }
+</style>
+
+<h2 id="titulo-vazao">Vazão de Saída</h2>
+
+<!-- Formulário para seleção de data -->
+<form id="dateForm" method="POST" action="/vazaosaida">
+    <label for="testDate">Selecione a Data de Teste:</label>
+    <input type="datetime-local" id="testDate" name="testDate">
+    <button type="submit" id="submitBtn">Executar Pipeline</button>
+</form>
+
+<div id="plot-container1">
+    {{ plot1 | safe }}
+</div>
+<br>
+<br>
+<div id="plot-container2">
+    {{ plot2 | safe }}
+</div>
+<br>
+<br>
+<div id="plot-container3">
+    {{ plot3 | safe }}
+</div>
+<div id="plot-container3">
+    {{ plot4 | safe }}
+</div>
+
+{% endblock %}
