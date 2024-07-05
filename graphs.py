@@ -7,6 +7,7 @@ from plotly.subplots import make_subplots
 
 handler = DataFrameHandler()
 
+
 def g_vazaoSaida():
     fig = go.Figure()
     momento = handler.get_coluna('DATA/HORA')
@@ -115,7 +116,6 @@ def g_previsaoBombas(vazao_prev, entrada_agua, current_level, start_hour):
     ))
 
     fig.update_layout(
-        title='Nível do Reservatório ao Longo do Dia',
         xaxis_title='Hora',
         yaxis_title='Nível do Reservatório (%)',
         legend=dict(x=0.01, y=0.99),
@@ -125,10 +125,20 @@ def g_previsaoBombas(vazao_prev, entrada_agua, current_level, start_hour):
         annotations=[
             dict(
                 x=0.5,
-                y=-0.2,
+                y=-0.3,
                 xref='paper',
                 yref='paper',
                 text='Nível do Reservatório ao Longo do Dia',
+                showarrow=False,
+                font=dict(size=16),
+                xanchor='center'
+            ),
+            dict(
+                x=0.5,
+                y=-0.35,
+                xref='paper',
+                yref='paper',
+                
                 showarrow=False,
                 font=dict(size=16),
                 xanchor='center'
@@ -208,7 +218,7 @@ def plotar_nivel_agua(horas, minutos, niveis_caixa, horas_completas):
     fig.add_trace(
         go.Table(
             header=dict(values=["Horas", "Minutos"],
-                        font=dict(size=26, color="black"),
+                        font=dict(size=14, color="black"),
                         align="left"),
             cells=dict(values=[horas, minutos],
                        align="left")
@@ -238,28 +248,25 @@ def plotar_nivel_agua(horas, minutos, niveis_caixa, horas_completas):
 
 import plotly.express as px
 
-def plot_bomb_status(soma_ponta_0_horas, soma_ponta_1_horas):
-    labels = ['Fora de Horário de Ponta', 'Dentro de Horário de Ponta']
+def plot_pie_chart_com_totais(soma_ponta_0_horas, soma_ponta_1_horas):
+    labels = ['Fora de Horário de Ponta', 'Horário de Ponta']
     values = [soma_ponta_0_horas, soma_ponta_1_horas]
     
-    fig = go.Figure(data=[go.Bar(x=labels, y=values)])
-    fig.update_layout(title='Horas em Horário de Ponta vs Fora de Horário de Ponta',
-                      xaxis_title='Estado das Bombas',
-                      yaxis_title='Horas')
+    fig = px.pie(names=labels, values=values, title='Qual é o tempo de uso das bombas em horário de ponta e fora de ponta?')
+    fig.update_traces(textinfo='percent+label', pull=[0, 0.1])
+    fig.update_layout(showlegend=False)
+    totais_text = f"""
+    Total Fora de Horário de Ponta: {soma_ponta_0_horas:.2f} horas
+    Total em Horário de Ponta: {soma_ponta_1_horas:.2f} horas
+    """
     
-    return fig
+    return fig, totais_text
 
-def plot_pie_chart(soma_ponta_0_horas, soma_ponta_1_horas):
-    labels = ['Horário de Ponta', 'Fora de Ponta']
-    values = [soma_ponta_1_horas, soma_ponta_0_horas]
+def plot_vazao_media_por_temperatura_com_correlacao(df_vazao_media):
+    # Calcular correlação entre 'TEMPERATURA' e 'VAZAO SAIDA'
+    correlacao = df_vazao_media['TEMPERATURA'].corr(df_vazao_media['VAZAO SAIDA'])
     
-    fig = px.pie(names=labels, values=values, title='Tempo em Horário de Ponta vs Fora de Ponta')
-    fig.update_traces(textinfo='percent+label')
-    
-    return fig
-
-def plot_vazao_media_por_temperatura(df_vazao_media):
-    
+    # Criar gráfico de linhas e pontos com Plotly
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=df_vazao_media['TEMPERATURA'],
@@ -268,8 +275,9 @@ def plot_vazao_media_por_temperatura(df_vazao_media):
         name='Média de Vazão'
     ))
     
+    # Personalizar layout do gráfico
     fig.update_layout(
-        title='Gráfico de Média de Vazão em Função da Temperatura',
+        title = 'Há correlação entre a temperatura e o consumo de água?',
         xaxis_title='Temperatura (°C)',
         yaxis_title='Média de Vazão',
         xaxis=dict(
@@ -280,29 +288,17 @@ def plot_vazao_media_por_temperatura(df_vazao_media):
         yaxis=dict(
             tickformat=',.0f'
         ),
-        hovermode='x unified'
+        hovermode='x unified',
+        margin=dict(t=50, b=100)  # Ajuste as margens para dar espaço ao título na parte inferior
     )
     
-    return fig
-
-def plot_correlacao_temperatura_vazao(df):
-    # Calcular correlação entre 'TEMPERATURA' e 'VAZAO SAIDA'
-    correlacao = df['TEMPERATURA'].corr(df['VAZAO SAIDA'])
-    
-    # Criar gráfico de dispersão com Plotly
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df['TEMPERATURA'], y=df['VAZAO SAIDA'], mode='markers',
-                             marker=dict(color='blue', opacity=0.7),
-                             name=f'Correlação: {correlacao:.2f}'))
-    
-    # Personalizar layout do gráfico
-    fig.update_layout(title='Correlação entre Temperatura e Vazão de Saída',
-                      xaxis_title='Temperatura (°C)',
-                      yaxis_title='Vazão de Saída',
-                      showlegend=True,
-                      legend=dict(x=0.02, y=0.98),
-                      margin=dict(l=50, r=50, t=50, b=50),
-                      hovermode='closest',
-                      plot_bgcolor='rgba(0,0,0,0)')
+    # Adicionar título na parte inferior
+    fig.add_annotation(
+        text=f'Gráfico de Média de Vazão em Função da Temperatura<br>Correlação: {correlacao:.2f}',
+        xref='paper', yref='paper',
+        x=0.5, y=-0.3,  # Posição do título
+        showarrow=False,
+        font=dict(size=14)
+    )
     
     return fig

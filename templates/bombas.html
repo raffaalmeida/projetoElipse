@@ -4,16 +4,21 @@
 
 {% block content %}
     
+<h3>Para um determinado dia, horário, nível do reservatório e previsão da vazão de saída para as próximas 24 horas, qual deveria ser a programação horária de cada bomba, de modo a minimizar o uso delas durante o horário de ponta, enquanto mantém o nível do reservatório entre 20% e 95%?</h3>
+<div id="plot-container">
+    {{ plot1 | safe }}
+</div>
+<div style="display: flex; align-items: center; justify-content: space-around;">
+    <div>
+        <br><br>
+        {{ plot2|safe }}
+    </div>
+    <div>
+        <h2>Totais</h2>
+        <p>{{ totais_text }}</p>
+    </div>
+</div>
 
-<div id="plot-container">
-    {{ plot3 | safe }}
-</div>
-<div id="plot-container">
-    {{ plot4 | safe }}
-</div>
-<div id="plot-container">
-    {{ plot5 | safe }}
-</div>
 
     
 {% endblock %}

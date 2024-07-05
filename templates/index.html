@@ -60,44 +60,78 @@ Projeto Elipse Software
             <li>Para um determinado dia, horário, nível do reservatório e previsão da vazão de saída para as próximas 24 horas, qual deveria ser a programação horária de cada bomba, de modo a minimizar o uso delas durante o horário de ponta, enquanto mantém o nível do reservatório entre 20% e 95%?</li>
         </ul>
     </ul>
-
+    
+    
     <h1>Nossa Solução</h1>
     <p>Para responder às questões propostas, desenvolvemos um pipeline de dados que realiza as seguintes etapas:</p>
-    <p>... 
-        explicar como respondemos tudo
-        ...</p>
-    <h1>Integrantes</h1>
+    <ul>
+        <li><strong>Preparação e Análise dos Dados:</strong>
+            <ul>
+                <li>Coletamos e analisamos os dados recebidos, que consistem em 125.073 registros distribuídos em seis colunas (DATA/HORA, VAZÃO ENTRADA, NÍVEL RESERVATÓRIO, PRESSÃO, GMB 1, GMB 2).</li>
+                <li>Realizamos a conversão da coluna data/hora para o tipo datetime.</li>
+                <li>Substituímos zeros pelo valor anterior não-zero na coluna "NÍVEL RESERVATÓRIO (%)".</li>
+                <li>Consolidamos as informações das bombas em uma única coluna.</li>
+            </ul>
+        </li>
+        <li><strong>Análise da Curva Típica:</strong>
+            <ul>
+                <li>Desenvolvemos curvas típicas da saída do reservatório ao longo de 24 horas para dias úteis e finais de semana.</li>
+                <li>Utilizamos a biblioteca tsfresh para extrair características estatísticas e aplicamos K-means para obter clusters de dias com comportamentos semelhantes.</li>
+            </ul>
+        </li>
+        <li><strong>Previsão da Vazão de Saída:</strong>
+            <ul>
+                <li>Usamos os modelos XGBoost e ADABoost para prever a vazão de saída nos próximos períodos.</li>
+                <li>Desenvolvemos diferentes abordagens e ajustamos os modelos para melhorar a precisão das previsões.</li>
+            </ul>
+        </li>
+        <li><strong>Previsão da Vazão com Base na Temperatura:</strong>
+            <ul>
+                <li>Analisamos a correlação entre a vazão de saída e a temperatura.</li>
+                <li>Utilizamos modelos de Regressão Linear, Random Forest e Support Vector Machine para prever a vazão nas próximas 24 horas com base nos dados de temperatura.</li>
+            </ul>
+        </li>
+        <li><strong>Previsão do Acionamento das Bombas:</strong>
+            <ul>
+                <li>Com base na vazão de saída prevista, escrevemos algoritmos que determinam o acionamento ou desligamento das bombas para cada hora nas próximas 24 horas, respeitando os critérios do nível do reservatório e buscando economizar energia elétrica.</li>
+            </ul>
+        </li>
+        <li><strong>Avaliação dos Resultados:</strong>
+            <ul>
+                <li>Comparamos o custo de energia elétrica dos modelos com o custo calculado a partir dos dados fornecidos no dataset.</li>
+                <li>Implementamos um algoritmo Q-Learning para otimizar o uso das bombas, considerando as restrições de nível do reservatório e horários de ponta.</li>
+            </ul>
+        </li>
+        <li><strong>Final:</strong>
+            <ul>
+                <li>Desenvolvemos um pipeline automatizado que processa os dados e gera as previsões.</li>
+                <li>Criamos um dashboard interativo para visualização dos resultados, permitindo acompanhamento em tempo real sem necessidade de intervenção manual.</li>
+            </ul>
+        </li>
+    </ul>
 
+    <h1>Integrantes</h1>
     <div class="grid-container">
-        
         <div class="item">
             <img src="static/images/IMG_4518.PNG" alt="Imagem 1" class="imagem-redonda">
             <span>Andressa Rosa</span>
         </div>
-
-       
         <div class="item">
             <img src="static/images/IMG_4519.PNG" alt="Imagem 2" class="imagem-redonda">
             <span>Artur Wiederkehr</span>
         </div>
-
-        <!-- Terceira imagem e nome -->
         <div class="item">
             <img src="static/images/IMG_4520.PNG" alt="Imagem 3" class="imagem-redonda">
             <span>Bruna Birck</span>
         </div>
-
         <div class="item">
             <img src="static/images/IMG_4522.JPG" alt="Imagem 4" class="imagem-redonda">
             <span>Rafael Almeida</span>
         </div>
-
         <div class="item">
             <img src="static/images/IMG_4521.PNG" alt="Imagem 5" class="imagem-redonda">
             <span>Vladimir Dorneles</span>
         </div>
-      
     </div>
 </div>
 {% endblock %}
-
